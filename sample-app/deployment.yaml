@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-nginx
+  template:
+    metadata:
+      labels:
+        app: my-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "128Mi"  # Minimum memory requested
+            cpu: "250m"      # Minimum CPU requested (0.25 vCPU)
+          limits:
+            memory: "256Mi"  # Maximum memory allowed
+            cpu: "500m"      # Maximum CPU allowed (0.5 vCPU)
+
+
+
+
+# above showed warning message like this -> One or more containers do not have resource limits - this could starve other processes
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: my-nginx
+# spec:
+#   replicas: 2
+#   selector:
+#     matchLabels:
+#       app: my-nginx
+#   template:
+#     metadata:
+#       labels:
+#         app: my-nginx
+#     spec:
+#       containers:
+#       - name: nginx
+#         image: nginx
+#         ports:
+#         - containerPort: 80

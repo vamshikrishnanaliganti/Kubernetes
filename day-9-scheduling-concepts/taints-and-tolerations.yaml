@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: blue  # Corrected: Direct key-value pair for labels
+spec:
+  replicas: 3  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: blue  # Corrected: Direct key-value pair for matchLabels
+  template:
+    metadata:
+      labels:
+        app: blue  # Corrected: Direct key-value pair for labels
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          resources:  # Added resource limits to fix the warning
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+      tolerations:
+        - key: "app"
+          operator: "Equal"
+          value: "blue"
+          effect: "NoSchedule"
+
+
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: nginx-deployment
+#   labels:
+#     key: app
+#     value: blue
+# spec:
+#   replicas: 3  # Adjust the number of replicas as needed
+#   selector:
+#     matchLabels:
+#       key: app
+#       value: blue
+#   template:
+#     metadata:
+#       labels:
+#         key: app
+#         value: blue
+#     spec:
+#       containers:
+#         - name: nginx
+#           image: nginx
+#       tolerations:
+#         - key: "app"
+#           operator: "Equal"
+#           value: "blue"
+#           effect: "NoSchedule"
+#  This code shows warning, hence using the above code

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  namespace: demo
+  labels:
+    app: webapp
+    type: front-end
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:latest  # Specify a tag for the image
+    ports:
+    - containerPort: 80  # Expose port 80 for the nginx container
+    resources:  # Add resource requests and limits for better resource management
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+   #we can create our own namespace using "kubectl create ns test", displays all default+custom namespace using "kubectl get ns", if your pod need to run on your custom namespace then use "kubectl get pods -n test" , namespace are created for identifying different envirnoment like test, dev etc, by default, the namespace is "Namespace:default"

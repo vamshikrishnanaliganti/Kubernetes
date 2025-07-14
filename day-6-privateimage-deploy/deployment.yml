@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: regapp-deployment
+  labels:
+    app: regapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: regapp
+  template:
+    metadata:
+      labels:
+        app: regapp
+    spec:
+      containers:
+        - name: regapp
+          image: veeranarni/hotstar
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: "250m"    # Minimum 250 millicores of CPU
+              memory: "256Mi"  # Minimum 256MB of memory
+            limits:
+              cpu: "500m"    # Maximum 500 millicores of CPU
+              memory: "512Mi"  # Maximum 512MB of memory
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: regapp-service
+  labels:
+    app: regapp
+spec:
+  selector:
+    app: regapp
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: NodePort

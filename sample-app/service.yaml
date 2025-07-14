@@ -1,0 +1,48 @@
+# use any to check the service type result for Load Balancer, ClusterIp and NodePort
+#with load balancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nginx-service
+spec:
+  selector:
+    app: my-nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer  # Change to LoadBalancer for cloud providers
+
+#with ClusterIP
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: my-app-svc
+#   labels:
+#     app: my-app
+# spec:
+#   type: ClusterIP
+#   ports:
+#   - port: 80
+#     targetPort: 80
+#     protocol: TCP
+#   selector:
+#     app: my-app
+
+#with NodePort
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: my-nginx-service
+# spec:
+#   selector:
+#     app: my-nginx
+#   ports:
+#   - protocol: TCP
+#     port: 80
+#     targetPort: 80
+#   type: NodePort  # Change to NodePort for external access
+
+

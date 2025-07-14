@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-myapp
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+      replica: blue
+  template:
+    metadata:
+      labels:
+        app: myapp
+        replica: blue
+    spec:
+      containers:
+        - name: myapp
+          image: nginx
+          ports:
+            - name: http
+              containerPort: 80
+          resources:
+            requests:
+              cpu: "250m"  # Minimum 250 millicores of CPU
+              memory: "256Mi"  # Minimum 256MB of memory
+            limits:
+              cpu: "500m"  # Maximum 500 millicores of CPU
+              memory: "512Mi"  # Maximum 512MB of memory

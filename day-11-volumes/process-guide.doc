@@ -1,0 +1,96 @@
+Step 1: Installing Helm on Kubernetes
+
+To install Helm, follow these steps:
+
+1. Download Helm from the official repository:
+
+wget https://get.helm.sh/helm-v3.14.0-linux-amd64.tar.gz
+
+2. Extract the downloaded file:
+
+tar -zxvf helm-v3.14.0-linux-amd64.tar.gz
+
+3. Move the Helm binary to /usr/local/bin for global access:
+
+mv linux-amd64/helm /usr/local/bin/helm
+
+4. Grant execution permissions:
+
+chmod 777 /usr/local/bin/helm
+
+5. Verify the Helm installation:
+
+helm version
+
+Note: After creating an EKS cluster, ensure that the Node Group IAM Role has EC2 Full Access or Administrator Access. Without this, the EBS volumes won't be created successfully.
+
+
+ 
+Step 2: Install AWS EBS CSI Driver in an EKS Cluster
+
+1. Add the AWS EBS CSI Driver Helm repository:
+
+helm repo add aws-ebs-csi-driver https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+helm repo update
+
+2. Install the AWS EBS CSI Driver in the Kubernetes cluster:
+helm upgrade --install aws-ebs-csi-driver --namespace kube-system aws-ebs-csi-driver/aws-ebs-csi-driver
+
+
+ 
+Three Approaches for Volume Creation in Kubernetes
+
+
+1.	Static Host Path (PV, PVC, Deployment) – Not Recommended
+o	Uses hostPath, where storage is tied to a specific node.
+o	If the node is deleted, the volume is lost.
+o	Best suited for temporary storage needs but not recommended for production.
+
+2.	Static Cloud Path (PV, PVC, Deployment) – Persistent but Manual
+o	Uses manually created EC2 EBS volumes as persistent storage.
+o	Storage remains intact even if the node is deleted.
+o	Requires manual creation of EBS volumes before use.
+
+3.	Dynamic Volume Provisioning (Storage Class, PVC) – Recommended
+o	Uses StorageClass to dynamically provision EBS-backed PVs.
+o	The Persistent Volume (PV) is created automatically by Kubernetes when a PVC is requested.
+o	Best for scalable and production-ready environments.
+ 
+
+
+
+Volume Access Modes in Kubernetes
+
+
+Access Mode	->Description->	Use Case
+1. ReadWriteMany (RWX)->	Multiple pods across different nodes can read and write to the volume.	->Required when multiple pods need concurrent write access (e.g., shared data directories).
+2. ReadWriteOnce (RWO)->	Only a single pod can write to the volume, but multiple pods can read from it if they are on the same node.	->Used when exclusive write access is needed, or when RWX is not available.
+3. ReadOnlyMany (ROX)->	Multiple pods across different nodes can read from the volume, but none can write.	-> Best for shared read-only data like configuration files, logs, or reference datasets.
+
+If your storage provider does not support ReadOnlyMany (ROX), you may be forced to use ReadWriteOnce (RWO) and explicitly mount the volume as read-only using:
+
+
+volumeMounts:
+  - mountPath: "/data"
+    name: my-volume
+    readOnly: true
+
+
+
+
+Persistent Volume Reclaim Policies
+
+
+1. Delete (Default) ->	When the PVC is deleted, the PV is also deleted if it was created dynamically by a StorageClass. However, the actual EBS volume remains and must be manually deleted.
+2. Retain	-> The PV remains intact even after the PVC is deleted, ensuring persistent data storage.
+
+
+
+
+Volume Binding Modes in Kubernetes
+
+1. Immediate (Default)	-> The PV is created immediately when a PVC is requested, regardless of whether a pod needs it.
+2. WaitForFirstConsumer ->	The PV is created only when a pod requests storage (i.e., when the pod is scheduled), ensuring optimal storage allocation.
+
+For dynamically provisioned volumes, WaitForFirstConsumer is recommended to prevent unnecessary storage allocation.
+

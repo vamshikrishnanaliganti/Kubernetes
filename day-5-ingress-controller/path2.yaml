@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpd
+  template:
+    metadata:
+      labels:
+        app: httpd
+    spec:
+      containers:
+        - name: httpd
+          image: httpd
+          ports:
+            - containerPort: 80
+          env:
+            - name: TITLE
+              value: "APACHE APP2"
+          resources:
+            requests:
+              cpu: "250m"    # Minimum 250 millicores of CPU
+              memory: "256Mi"  # Minimum 256MB of memory
+            limits:
+              cpu: "500m"    # Maximum 500 millicores of CPU
+              memory: "512Mi"  # Maximum 512MB of memory
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpd  
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: httpd

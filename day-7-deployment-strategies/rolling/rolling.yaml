@@ -1,0 +1,34 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  namespace: default
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  replicas: 4
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: myapp
+          image: httpd # 483216680875.dkr.ecr.ap-south-1.amazonaws.com/hotstar:latest  # Apply rollback deployment after changing the version  
+          ports:
+            - name: http
+              containerPort: 8181
+          resources:
+            requests:
+              cpu: "250m"    # Minimum 250 millicores of CPU
+              memory: "256Mi"  # Minimum 256MB of memory
+            limits:
+              cpu: "500m"    # Maximum 500 millicores of CPU
+              memory: "512Mi"  # Maximum 512MB of memory

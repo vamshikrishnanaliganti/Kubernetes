@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-hpa
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9  # Specify a specific version for consistency
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "250m"  # Required for HPA to scale based on CPU utilization
+            memory: "64Mi"  # Add memory request for better resource management
+          limits:
+            cpu: "500m"  # Add CPU limit to prevent overconsumption
+            memory: "128Mi"  # Add memory limit for better resource control
