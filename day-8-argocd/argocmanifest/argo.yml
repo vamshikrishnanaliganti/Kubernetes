@@ -7,7 +7,7 @@
 #   project: default
 
 #   source:
-#     repoURL: https://github.com/lumlathomas/Kubernetes.git
+#     repoURL: https://github.com/vamshikrishnanaliganti/Kubernetes.git
 #     targetRevision: HEAD
 #     path: day-8-argocd
 #   destination: 
@@ -22,26 +22,3 @@
 #       selfHeal: true
 #       prune: true
 
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: myapp-argo
-  namespace: argocd
-spec:
-  project: default
-
-  source:
-    repoURL: https://github.com/vamshikrishnanaliganti/Kubernetes.git
-    targetRevision: HEAD
-    path: day-8-argocd
-
-  destination: 
-    server: https://kubernetes.default.svc
-    namespace: myapp
-
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
-    automated:
-      prune: true
-      selfHeal: true
