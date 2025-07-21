@@ -1,31 +1,53 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: swiggy-app
+#   labels:
+#     app: swiggy-app
+# spec:
+#   replicas: 2
+#   selector:
+#     matchLabels:
+#       app: swiggy-app
+#   template:
+#     metadata:
+#       labels:
+#         app: swiggy-app
+#     spec:
+#       terminationGracePeriodSeconds: 30
+#       containers:
+#       - name: swiggy-app
+#         #image: veeranarni/hotstar:latest  # Using a public image
+#         image: httpd
+#         imagePullPolicy: Always
+#         ports:
+#         - containerPort: 3000
+#         resources:
+#           requests:
+#             memory: "256Mi"  # Minimum memory required
+#             cpu: "250m"       # Minimum CPU required
+#           limits:
+#             memory: "512Mi"   # Maximum memory allowed
+#             cpu: "500m"       # Maximum CPU 
+
+#added fr test
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: swiggy-app
-  labels:
-    app: swiggy-app
+  name: my-k8s-app
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: swiggy-app
+      app: my-k8s-app
   template:
     metadata:
       labels:
-        app: swiggy-app
+        app: my-k8s-app
     spec:
-      terminationGracePeriodSeconds: 30
       containers:
-      - name: swiggy-app
-        #image: veeranarni/hotstar:latest  # Using a public image
-        image: httpd
-        imagePullPolicy: Always
+      - name: app-container
+        image: nginx
         ports:
-        - containerPort: 3000
-        resources:
-          requests:
-            memory: "256Mi"  # Minimum memory required
-            cpu: "250m"       # Minimum CPU required
-          limits:
-            memory: "512Mi"   # Maximum memory allowed
-            cpu: "500m"       # Maximum CPU allowed
+        - containerPort: 80
+
